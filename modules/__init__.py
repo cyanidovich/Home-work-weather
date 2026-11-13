@@ -1,2 +1,2 @@
 from .app import app
-from .window import main_window
+from .window import main_window 

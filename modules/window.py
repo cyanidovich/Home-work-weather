@@ -2,86 +2,107 @@ from PyQt6.QtWidgets import QMainWindow, QFrame, QGridLayout, QLabel, QPushButto
 from modules.app import app 
 from PyQt6.QtWidgets import QVBoxLayout, QHBoxLayout
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QScrollArea
-
-
-main_window = QMainWindow()
-
-WIDTH_WINDOW = 1024
-HEIGHT_WINDOW  = 800
-
-# получаем обьект экрана
-primary_screen = app.primaryScreen()
-# получаем размеры экрана
-screen_size = primary_screen.size()
-# получаем ширину экрана
-width_screen = screen_size.width()
-# получаем высоту экрана
-height_screen = screen_size.height()
-
-
-main_window.setGeometry(
-    (width_screen // 2) - (WIDTH_WINDOW // 2), 
-    (height_screen // 2) - (HEIGHT_WINDOW // 2), 
-    WIDTH_WINDOW, 
-    HEIGHT_WINDOW
-)
-
-main_frame = QFrame(parent = main_window)
-main_frame.setFixedSize(1024, 800)
-main_frame.setStyleSheet("background-color: #696969	; border-radius: 15px")
-
-
-state = {"count": 0}
-
-main_layout = QVBoxLayout() 
-
-
-label_count = QLabel(str(state["count"]))
-label_count.setAlignment(Qt.AlignmentFlag.AlignCenter)
-label_count.setStyleSheet("font-size: 44px; font-weight: bold")
-
-
-btn_minus = QPushButton("-")
-btn_minus.setStyleSheet("background-color: #333333; color: white; border-radius: 8px; padding: 10px; font-weight: bold")
-
-btn_reset = QPushButton("Reset")
-btn_reset.setStyleSheet("background-color: #333333; color: white; border-radius: 8px; padding: 10px; font-weight: bold")
-
-btn_plus = QPushButton("+")
-btn_plus.setStyleSheet("background-color: #333333; color: white; border-radius: 8px; padding: 10px; font-weight: bold")
-
-btn_plus.setFixedHeight(50)
-btn_minus.setFixedHeight(50)
-btn_reset.setFixedHeight(50)
-
-buttons_layout = QVBoxLayout()
-buttons_layout.addWidget(btn_plus)
-
-buttons_layout.addWidget(btn_minus)
-buttons_layout.addWidget(btn_reset)
-
-main_layout.addWidget(label_count)
-main_layout.addLayout(buttons_layout)
-main_frame.setLayout(main_layout)
+from PyQt6.QtWidgets import QScrollArea 
+from PyQt6.QtGui import QMouseEvent, QKeyEvent
 
 
 
-def button_plus():
-    state["count"] += 1
-    label_count.setText(str(state["count"]))
 
-def button_minus():
-    state["count"] -= 1
-    label_count.setText(str(state["count"]))
 
-def button_reset():
-    state["count"] = 0
-    label_count.setText(str(state["count"]))
 
-btn_plus.clicked.connect(button_plus)
-btn_minus.clicked.connect(button_minus)
-btn_reset.clicked.connect(button_reset)        
+
+
+
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.my_frames = []
+       
+        
+        
+        
+
+        self.WIDTH_WINDOW = 1024
+        self.HEIGHT_WINDOW  = 800
+
+        # получаем обьект экрана
+        primary_screen = app.primaryScreen()
+        # получаем размеры экрана
+        screen_size = primary_screen.size()
+        # получаем ширину экрана
+        width_screen = screen_size.width()
+        # получаем высоту экрана
+        height_screen = screen_size.height()
+
+
+        self.setGeometry(
+        (width_screen // 2) - (self.WIDTH_WINDOW // 2), 
+        (height_screen // 2) - (self.HEIGHT_WINDOW // 2), 
+        self.WIDTH_WINDOW, 
+        self.HEIGHT_WINDOW
+    )
+        
+        self.main_frame = QFrame(parent = self)
+        self.main_frame.setFixedSize(1024, 500)
+        self.main_frame.setStyleSheet("background-color: #ffffff")
+        
+        
+
+        
+
+        self.counter_label = QLabel("Всего фреймов: 0", parent=self)
+        self.counter_label.setStyleSheet("color: white; font-size: 12px")
+        self.counter_label.resize(200, 30)
+        self.counter_label.move(20, 520)
+        
+        
+
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            frame_click = QFrame(parent = self.main_frame)
+            frame_click.setFixedSize(50, 50)
+            frame_click.setStyleSheet("background-color: #008bc7")
+            frame_click.move(event.pos())
+            frame_click.show()
+            self.my_frames.append(frame_click)
+            self.counter_label.setText(f"Всего фреймов: {len(self.my_frames)}")
+            
+        
+        return super().mousePressEvent(event)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Backspace:
+            for frame in self.my_frames:
+                frame.deleteLater()
+            self.my_frames.clear()
+            self.counter_label.setText("Всего фреймов: 0")
+        return super().keyPressEvent(event)
+           
+
+        
+
+main_window = MainWindow()
+
+
+
+
+    
+    
+
+
+
+
+
+    
+
+
+
+
+
+
+    
 
 
 
