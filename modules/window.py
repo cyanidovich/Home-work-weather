@@ -61,13 +61,14 @@ class MainWindow(QMainWindow):
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
-            frame_click = QFrame(parent = self.main_frame)
-            frame_click.setFixedSize(50, 50)
-            frame_click.setStyleSheet("background-color: #008bc7")
-            frame_click.move(event.pos())
-            frame_click.show()
-            self.my_frames.append(frame_click)
-            self.counter_label.setText(f"Всего фреймов: {len(self.my_frames)}")
+            if event.pos().y() < 500:
+                frame_click = QFrame(parent = self.main_frame)
+                frame_click.setFixedSize(50, 50)
+                frame_click.setStyleSheet("background-color: #008bc7")
+                frame_click.move(event.pos())
+                frame_click.show()
+                self.my_frames.append(frame_click)
+                self.counter_label.setText(f"Всего фреймов: {len(self.my_frames)}")
             
         
         return super().mousePressEvent(event)
