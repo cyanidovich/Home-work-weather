@@ -6,79 +6,107 @@ from PyQt6.QtWidgets import QScrollArea
 from PyQt6.QtGui import QMouseEvent, QKeyEvent
 
 
-
-
-
-
-
-
-
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.my_frames = []
-       
-        
-        
-        
+        self.figures = []
 
         self.WIDTH_WINDOW = 1024
         self.HEIGHT_WINDOW  = 800
 
-        # получаем обьект экрана
-        primary_screen = app.primaryScreen()
         # получаем размеры экрана
+        primary_screen = app.primaryScreen()
         screen_size = primary_screen.size()
-        # получаем ширину экрана
         width_screen = screen_size.width()
-        # получаем высоту экрана
         height_screen = screen_size.height()
 
-
         self.setGeometry(
-        (width_screen // 2) - (self.WIDTH_WINDOW // 2), 
-        (height_screen // 2) - (self.HEIGHT_WINDOW // 2), 
-        self.WIDTH_WINDOW, 
-        self.HEIGHT_WINDOW
-    )
+            (width_screen // 2) - (self.WIDTH_WINDOW // 2), 
+            (height_screen // 2) - (self.HEIGHT_WINDOW // 2), 
+            self.WIDTH_WINDOW, 
+            self.HEIGHT_WINDOW
+        )
         
-        self.main_frame = QFrame(parent = self)
-        self.main_frame.setFixedSize(1024, 500)
-        self.main_frame.setStyleSheet("background-color: #ffffff")
-        
-        
+        self.setStyleSheet("background-color: white")
 
         
+        self.main_frame = QFrame(parent=self)
+        self.main_frame.setFixedSize(1024, 800)
+        self.main_frame.setStyleSheet("background-color: white")
 
-        self.counter_label = QLabel("Всего фреймов: 0", parent=self)
-        self.counter_label.setStyleSheet("color: white; font-size: 12px")
-        self.counter_label.resize(200, 30)
-        self.counter_label.move(20, 520)
         
+        self.stats_layout = QVBoxLayout(self.main_frame)
+        self.stats_layout.setContentsMargins(20, 20, 20, 20)
+        self.stats_layout.setSpacing(10)
+
         
+        self.counter_label_size = self.create_counter_label("Размер:")
+        self.counter_label_colors = self.create_counter_label("Цвет:")
+        self.counter_label_figures = self.create_counter_label("Фигур: 0")
+
+        
+        self.stats_layout.addWidget(self.counter_label_size)
+        self.stats_layout.addWidget(self.counter_label_colors)
+        self.stats_layout.addWidget(self.counter_label_figures)
+        
+        self.stats_layout.addStretch()
+
+   
+    def create_counter_label(self, default_text=""):
+        label = QLabel(self.main_frame)
+        label.setText(default_text)
+        label.setStyleSheet("color: black; font-size: 24px; font-weight: bold;")
+        label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        return label
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
-            if event.pos().y() < 500:
-                frame_click = QFrame(parent = self.main_frame)
-                frame_click.setFixedSize(50, 50)
-                frame_click.setStyleSheet("background-color: #008bc7")
-                frame_click.move(event.pos())
-                frame_click.show()
-                self.my_frames.append(frame_click)
-                self.counter_label.setText(f"Всего фреймов: {len(self.my_frames)}")
+            frame_click = QFrame(parent=self.main_frame) 
+            frame_click.setFixedSize(50, 50)
+            frame_click.setStyleSheet("background-color: #008bc7")
+            frame_click.move(event.pos())
+            frame_click.show()
+            frame_click.raise_() 
+            self.figures.append(frame_click)
             
-        
+            
+            self.counter_label_size.setText("Размер: ")
+            self.counter_label_colors.setText("Цвет: ")
+            self.counter_label_figures.setText(f"Фигур: {len(self.figures)}")
+            
         return super().mousePressEvent(event)
 
     def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key.Key_Backspace:
-            for frame in self.my_frames:
+        if event.key() == Qt.Key.Key_C:
+            for frame in self.figures:
                 frame.deleteLater()
-            self.my_frames.clear()
-            self.counter_label.setText("Всего фреймов: 0")
+            self.figures.clear()
+            self.counter_label_size.setText("Размер:")
+            self.counter_label_colors.setText("Цвет:")
+            self.counter_label_figures.setText("Фигур: 0")
+        return super().keyPressEvent(event)
+        
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            #if event.pos().y() < 500:
+            frame_click = QFrame(parent = self)
+            frame_click.setFixedSize(50, 50)
+            frame_click.setStyleSheet("background-color: #008bc7")
+            frame_click.move(event.pos())
+            frame_click.show()
+            self.figures.append(frame_click)
+            self.counter_label_1.setText("Размер:")
+            self.counter_label_2.setText("Цвет:")
+            self.counter_label_3.setText(f"Фигуры: {len(self.figures)}")
+            
+        return super().mousePressEvent(event)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_C:
+            for frame in self.figures:
+                frame.deleteLater()
+            self.figures.clear()
+            self.counter_label_1.setText("Всего фигур: 0")
         return super().keyPressEvent(event)
            
 
